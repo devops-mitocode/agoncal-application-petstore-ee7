@@ -34,7 +34,7 @@ pipeline {
         stage('Deploy with Ansible') {
             agent {
                 docker {
-                    image 'ansible/ansible-runner:1.4.7'
+                    image 'quay.io/ansible/ansible-runner:stable-2.12-latest'
                     args '-u root'
                 }
             }
