@@ -43,9 +43,11 @@ pipeline {
             }
             options { skipDefaultCheckout() }
             steps {
-                sshagent (credentials: ['centos-private-key']){
-                    sh 'env | sort'
-                    sh 'ansible-playbook -i hosts ansible/deploy_jboss.yml'
+                dir('ansible'){
+                    sshagent (credentials: ['centos-private-key']){
+                        sh 'env | sort'
+                        sh 'ansible-playbook -i hosts deploy_jboss.yml'
+                    }
                 }
             }
         }        
