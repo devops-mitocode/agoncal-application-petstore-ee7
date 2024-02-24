@@ -14,22 +14,40 @@ pipeline {
                 sh 'mvn clean package -B -ntp -DskipTests'
             }
         }
-        stage('Deploy with jboss-cli.sh') {
-            agent any
-            steps {
-                sshagent (credentials: ['centos-private-key']){
-                    sh '''
-                        pwd
-                        ls -la
-                        env | sort
+        // stage('Deploy with jboss-cli.sh') {
+        //     agent any
+        //     steps {
+        //         sshagent (credentials: ['centos-private-key']){
+        //             sh '''
+        //                 pwd
+        //                 ls -la
+        //                 env | sort
 
-                        scp -o StrictHostKeyChecking=no target/applicationPetstore.war ec2-user@54.69.220.80:/home/ec2-user
-                        ssh ec2-user@54.69.220.80 "~/jboss-eap-7.4/bin/jboss-cli.sh --user=$JBOSS_CREDENTIALS_USR --password=$JBOSS_CREDENTIALS_PSW -c --command='undeploy applicationPetstore.war'"
-                        ssh ec2-user@54.69.220.80 "~/jboss-eap-7.4/bin/jboss-cli.sh --user=$JBOSS_CREDENTIALS_USR --password=$JBOSS_CREDENTIALS_PSW -c --command='deploy /home/ec2-user/applicationPetstore.war'"
-                        ssh ec2-user@54.69.220.80 'rm -f /home/ec2-user/applicationPetstore.war'
-                    '''
+        //                 scp -o StrictHostKeyChecking=no target/applicationPetstore.war ec2-user@54.69.220.80:/home/ec2-user
+        //                 ssh ec2-user@54.69.220.80 "~/jboss-eap-7.4/bin/jboss-cli.sh --user=$JBOSS_CREDENTIALS_USR --password=$JBOSS_CREDENTIALS_PSW -c --command='undeploy applicationPetstore.war'"
+        //                 ssh ec2-user@54.69.220.80 "~/jboss-eap-7.4/bin/jboss-cli.sh --user=$JBOSS_CREDENTIALS_USR --password=$JBOSS_CREDENTIALS_PSW -c --command='deploy /home/ec2-user/applicationPetstore.war'"
+        //                 ssh ec2-user@54.69.220.80 'rm -f /home/ec2-user/applicationPetstore.war'
+        //             '''
+        //         }
+        //     }
+        // }
+        stage('Deploy with Ansible') {
+            agent {
+                docker {
+                    image 'ansible/ansible-runner:1.4.7'
+                    args '-u root'
                 }
             }
-        }
+            environment {
+                ANSIBLE_HOST_KEY_CHECKING = "False"
+            }
+            options { skipDefaultCheckout() }
+            steps {
+                sshagent (credentials: ['centos-private-key']){
+                    sh 'env | sort'
+                    sh 'ansible-playbook -i hosts ansible/deploy_jboss.yml'
+                }
+            }
+        }        
     }
 }
