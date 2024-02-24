@@ -20,7 +20,7 @@ pipeline {
                 sshagent (credentials: ['centos-private-key']){
                     sh '''
                         pwd
-                        cd target/ && ls -la
+                        ls -la
                         env | sort
 
                         scp -o StrictHostKeyChecking=no target/applicationPetstore.war ec2-user@54.69.220.80:/home/ec2-user
@@ -31,25 +31,5 @@ pipeline {
                 }
             }
         }
-        // stage('Deploy with Ansible') {
-        //     agent {
-        //         docker {
-        //             image 'quay.io/ansible/ansible-runner:stable-2.12-latest'
-        //             args '--entrypoint="" -u root'
-        //         }
-        //     }
-        //     environment {
-        //         ANSIBLE_HOST_KEY_CHECKING = "False"
-        //     }
-        //     options { skipDefaultCheckout() }
-        //     steps {
-        //         dir('ansible'){
-        //             sshagent (credentials: ['centos-private-key']){
-        //                 sh 'env | sort'
-        //                 sh 'ansible-playbook -i hosts deploy_jboss.yml'
-        //             }
-        //         }
-        //     }
-        // }
     }
 }
