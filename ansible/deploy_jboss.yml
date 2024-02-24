@@ -11,8 +11,8 @@
 
   - name: Deploy war with jboss-cli.sh
     ansible.builtin.shell: |
-      /home/centos/jboss-eap-7.4/bin/jboss-cli.sh -c --command="undeploy applicationPetstore.war"
-      /home/centos/jboss-eap-7.4/bin/jboss-cli.sh -c --command="deploy /home/centos/applicationPetstore.war"
+      /home/ec2-user/jboss-eap-7.4/bin/jboss-cli.sh -c --command="undeploy applicationPetstore.war"
+      /home/ec2-user/jboss-eap-7.4/bin/jboss-cli.sh -c --command="deploy /home/ec2-user/applicationPetstore.war"
 
   # - name: Deploy war
   #   community.general.jboss:
