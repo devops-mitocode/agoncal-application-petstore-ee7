@@ -46,7 +46,13 @@ pipeline {
                 dir('ansible'){
                     sshagent (credentials: ['centos-private-key']){
                         sh 'env | sort'
+
+                        sh 'ansible-galaxy --version'
+                        sh 'ansible-galaxy collection install community.general'
+                        
                         sh 'ansible-playbook -i hosts deploy_jboss.yml'
+
+
                     }
                 }
             }
