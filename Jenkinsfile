@@ -16,10 +16,9 @@ pipeline {
            steps {
                sshagent (credentials: ['centos-private-key']){
                    sh """
-                       
-                       ls -la
-
                        pwd
+
+                       ls -la
                        
                        scp -o StrictHostKeyChecking=no target/applicationPetstore.war ec2-user@54.69.220.80:/home/ec2-user
 
