@@ -14,22 +14,26 @@ pipeline {
        stage('Deploy') {
            agent any
            steps {
-               sshagent (credentials: ['centos-private-key']){
-                   sh """
-                       pwd
+                withCredentials([
+                    usernamePassword(credentialsId: 'jboss-credentials', usernameVariable: 'JBOSS_USER', passwordVariable: 'JBOSS_PASS')
+                ]) {
+                    sshagent (credentials: ['centos-private-key']){
+                        sh """
+                            pwd
 
-                       ls -la
-                       
-                       scp -o StrictHostKeyChecking=no target/applicationPetstore.war ec2-user@54.69.220.80:/home/ec2-user
+                            ls -la
+                            
+                            scp -o StrictHostKeyChecking=no target/applicationPetstore.war ec2-user@54.69.220.80:/home/ec2-user
 
-                       #ssh ec2-user@54.69.220.80 '~/jboss-eap-7.4/bin/jboss-cli.sh --user=admin --password=admin -c --command="undeploy applicationPetstore.war"'
-                      
-                       ssh ec2-user@54.69.220.80 '~/jboss-eap-7.4/bin/jboss-cli.sh --user=admin --password=admin -c --command="deploy /home/ec2-user/applicationPetstore.war"'
+                            #ssh ec2-user@54.69.220.80 '~/jboss-eap-7.4/bin/jboss-cli.sh --user=$JBOSS_USER --password=$JBOSS_PASS -c --command="undeploy applicationPetstore.war"'
+                            
+                            ssh ec2-user@54.69.220.80 '~/jboss-eap-7.4/bin/jboss-cli.sh --user=$JBOSS_USER --password=$JBOSS_PASS -c --command="deploy /home/ec2-user/applicationPetstore.war"'
 
-                       ssh ec2-user@54.69.220.80 'rm -f /home/ec2-user/applicationPetstore.war'
-                  
-                   """
-               }
+                            ssh ec2-user@54.69.220.80 'rm -f /home/ec2-user/applicationPetstore.war'
+                        
+                        """
+                    }
+                }
            }
        }
     //    stage('Deploy with Ansible') {
