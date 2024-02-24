@@ -23,7 +23,7 @@ pipeline {
                        
                        scp -o StrictHostKeyChecking=no target/applicationPetstore.war ec2-user@54.69.220.80:/home/ec2-user
 
-                       ssh ec2-user@54.69.220.80 '~/jboss-eap-7.4/bin/jboss-cli.sh -c --command="undeploy applicationPetstore.war"'
+                       #ssh ec2-user@54.69.220.80 '~/jboss-eap-7.4/bin/jboss-cli.sh -c --command="undeploy applicationPetstore.war"'
                       
                        ssh ec2-user@54.69.220.80 '~/jboss-eap-7.4/bin/jboss-cli.sh -c --command="deploy /home/ec2-user/applicationPetstore.war"'
 
