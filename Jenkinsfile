@@ -25,7 +25,7 @@ pipeline {
 
 
                         scp -o StrictHostKeyChecking=no target/applicationPetstore.war ec2-user@35.91.230.131:/home/ec2-user
-                        #ssh ec2-user@35.91.230.131 "~/jboss-eap-7.4/bin/jboss-cli.sh --user=$JBOSS_CREDENTIALS_USR --password=$JBOSS_CREDENTIALS_PSW -c --command='undeploy applicationPetstore.war'"
+                        ssh ec2-user@35.91.230.131 "~/jboss-eap-7.4/bin/jboss-cli.sh --user=$JBOSS_CREDENTIALS_USR --password=$JBOSS_CREDENTIALS_PSW -c --command='undeploy applicationPetstore.war'"
                         ssh ec2-user@35.91.230.131 "~/jboss-eap-7.4/bin/jboss-cli.sh --user=$JBOSS_CREDENTIALS_USR --password=$JBOSS_CREDENTIALS_PSW -c --command='deploy /home/ec2-user/applicationPetstore.war'"
                         ssh ec2-user@35.91.230.131 'rm -f /home/ec2-user/applicationPetstore.war'
                     '''
