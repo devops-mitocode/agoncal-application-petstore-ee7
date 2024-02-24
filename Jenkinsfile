@@ -16,6 +16,11 @@ pipeline {
            steps {
                sshagent (credentials: ['centos-private-key']){
                    sh """
+                       
+                       ls -la
+
+                       pwd
+                       
                        scp -o StrictHostKeyChecking=no target/applicationPetstore.war ec2-user@54.69.220.80:/home/ec2-user
 
                        ssh ec2-user@54.69.220.80 '~/jboss-eap-7.4/bin/jboss-cli.sh -c --command="undeploy applicationPetstore.war"'
