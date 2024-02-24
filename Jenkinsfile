@@ -1,19 +1,17 @@
 pipeline {
-   agent none
-   stages {
-       stage('Build') {
-           agent {
-               docker {
-                   image 'maven:3.8.8-eclipse-temurin-17-alpine'
-               }
-           }
-           steps {
-               sh 'mvn clean package -B -ntp -DskipTests'
-           }
-       }
-       stage('Deploy') {
-           agent any
-           steps {
+    agent {
+        docker {
+            image 'maven:3.8.8-eclipse-temurin-17-alpine'
+        }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn clean package -B -ntp -DskipTests'
+            }
+        }
+        stage('Deploy') {
+            steps {
                 withCredentials([
                     usernamePassword(credentialsId: 'jboss-credentials', usernameVariable: 'JBOSS_USER', passwordVariable: 'JBOSS_PASS')
                 ]) {
@@ -34,23 +32,7 @@ pipeline {
                         """
                     }
                 }
-           }
-       }
-    //    stage('Deploy with Ansible') {
-    //        agent {
-    //            docker {
-    //                image 'ansible/ansible-runner:1.4.7'
-    //                args '-u root'
-    //            }
-    //        }
-    //        environment {
-    //            ANSIBLE_HOST_KEY_CHECKING = "False"
-    //        }
-    //        steps {
-    //            sshagent (credentials: ['centos-private-key']){
-    //                sh 'ansible-playbook -i hosts ansible/deploy_jboss.yml'
-    //            }
-    //        }
-    //    }
-   }
+            }
+        }
+    }
 }
