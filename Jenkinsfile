@@ -18,7 +18,7 @@ pipeline {
             agent any
             steps {
                 sshagent (credentials: ['centos-private-key']){
-                    sh """
+                    sh '''
                         pwd
 
                         ls -la
@@ -31,7 +31,7 @@ pipeline {
 
                         ssh ec2-user@54.69.220.80 'rm -f /home/ec2-user/applicationPetstore.war'
                     
-                    """
+                    '''
                 }
             }
         }
