@@ -14,7 +14,7 @@ pipeline {
                 sh 'mvn clean package -B -ntp -DskipTests'
             }
         }
-        // stage('Deploy') {
+        // stage('Deploy with jboss-cli.sh') {
         //     agent any
         //     steps {
         //         sshagent (credentials: ['centos-private-key']){
@@ -37,16 +37,19 @@ pipeline {
         stage('Deploy with Ansible') {
             agent {
                 docker {
-                    image 'ansible/ansible-runner:1.4.7'
-                    args '-u root'
+                    image 'quay.io/ansible/ansible-runner:stable-2.12-latest'
+                    args '--entrypoint="" -u root'
                 }
             }
             environment {
                 ANSIBLE_HOST_KEY_CHECKING = "False"
             }
+            options { skipDefaultCheckout() }
             steps {
-                sshagent (credentials: ['centos-private-key']){
-                    sh 'ansible-playbook -i hosts ansible/deploy_jboss.yml'
+                dir('ansible'){
+                    sshagent (credentials: ['centos-private-key']){
+                        sh 'ansible-playbook -i hosts ansible/deploy_jboss.yml'
+                    }
                 }
             }
         }
