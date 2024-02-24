@@ -16,13 +16,13 @@ pipeline {
            steps {
                sshagent (credentials: ['centos-private-key']){
                    sh """
-                       scp -o StrictHostKeyChecking=no target/applicationPetstore.war ec2-user@34.220.221.160:/home/ec2-user
+                       scp -o StrictHostKeyChecking=no target/applicationPetstore.war ec2-user@54.69.220.80:/home/ec2-user
 
-                       ssh ec2-user@34.220.221.160 '~/jboss-eap-7.4/bin/jboss-cli.sh -c --command="undeploy applicationPetstore.war"'
+                       ssh ec2-user@54.69.220.80 '~/jboss-eap-7.4/bin/jboss-cli.sh -c --command="undeploy applicationPetstore.war"'
                       
-                       ssh ec2-user@34.220.221.160 '~/jboss-eap-7.4/bin/jboss-cli.sh -c --command="deploy /home/ec2-user/applicationPetstore.war"'
+                       ssh ec2-user@54.69.220.80 '~/jboss-eap-7.4/bin/jboss-cli.sh -c --command="deploy /home/ec2-user/applicationPetstore.war"'
 
-                       ssh ec2-user@34.220.221.160 'rm -f /home/ec2-user/applicationPetstore.war'
+                       ssh ec2-user@54.69.220.80 'rm -f /home/ec2-user/applicationPetstore.war'
                   
                    """
                }
