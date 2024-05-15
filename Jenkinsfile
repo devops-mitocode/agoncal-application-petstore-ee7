@@ -1,8 +1,8 @@
 pipeline {
     agent none
-    environment {
-        JBOSS_CREDENTIALS = credentials('jboss-credentials')
-    }
+    // environment {
+    //     JBOSS_CREDENTIALS = credentials('jboss-credentials')
+    // }
     stages {
         stage('Build') {
             agent {
