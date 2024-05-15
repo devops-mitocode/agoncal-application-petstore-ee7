@@ -1,0 +1,27 @@
+---
+- hosts: server1
+  become: true
+  remote_user: ec2-user
+
+  tasks:
+  - name: Copy war
+    ansible.builtin.copy:
+      src: "{{ lookup('ansible.builtin.env', 'WORKSPACE') }}/target/applicationPetstore.war"
+      dest: /home/ec2-user
+
+  # - name: Deploy war with jboss-cli.sh
+  #   ansible.builtin.shell: |
+  #     /home/ec2-user/jboss-eap-7.4/bin/jboss-cli.sh -c --command="undeploy applicationPetstore.war"
+  #     /home/ec2-user/jboss-eap-7.4/bin/jboss-cli.sh -c --command="deploy /home/ec2-user/applicationPetstore.war"
+
+  - name: Deploy war
+    community.general.jboss:
+      src: /home/ec2-user/applicationPetstore.war
+      deploy_path: /home/ec2-user/jboss-eap-7.4/standalone/deployments
+      deployment: applicationPetstore.war
+      state: present
+
+  - name: Remove war
+    ansible.builtin.file:
+      path: /home/ec2-user/applicationPetstore.war
+      state: absent
