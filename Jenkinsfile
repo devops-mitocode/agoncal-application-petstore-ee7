@@ -1,21 +1,20 @@
 pipeline {
-    agent none
+    agent {
+        docker {
+            image 'maven:3.8.8-eclipse-temurin-17-alpine'
+        }
+    }
     environment {
         JBOSS_CREDENTIALS = credentials('jboss-credentials')
     }
     stages {
         stage('Build') {
-            agent {
-                docker {
-                    image 'maven:3.8.8-eclipse-temurin-17-alpine'
-                }
-            }            
             steps {
                 sh 'mvn clean package -B -ntp -DskipTests'
             }
         }
         stage('Deploy with jboss-cli.sh') {
-            agent any
+            // agent any
             steps {
                 sshagent (credentials: ['centos-private-key']){
                     sh '''
